@@ -10,4 +10,4 @@ int memoryPrint;
 int entranceTime;
 } processStruct;
 
-std::vector<processStruct> genProcs(int numP);
+std::vector<processStruct> genProcs(int, std::string);

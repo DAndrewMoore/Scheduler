@@ -38,47 +38,60 @@ void checkTVec(vector<processStruct> &tVec){
     }
 }
 
-int main(){
-	vector<processStruct> pVec = genProcs(50); //get vector of processes
-	vector<processStruct> tVec; //queue of processes
+void SRT(vector<processStruct> pVec, int cores){
+		vector<processStruct> tVec; //queue of processes
         int total = 0;
-        
-        
-        printf("We have the process list size %d\n", pVec.size());
-        
-        
+        int deleted = 0;
+	
         for(int i=0; ; i++){ //just loop
-            //Checks for new entrance
+            
+			//Checks for new entrance
             if( (i%50) == 0 && (i/50) <= pVec.size()){ //if we've gotten a new entrance
-                printf("Adding new process\n");
                 tVec.push_back(pVec[i/50]); //put it on the back
                 checkTVec(tVec); //sort based on remaining time (SRT)
             } //only check when a new process enters scope
             
             //update total wait time if processes are waiting
-            if(tVec.size() > 1){
-                //printf("Updating total\n");
+            if(tVec.size() > cores)
                 total++;
-            }
             
-            //decrement amount of cycles for active process(es)
-            tVec[0].cycleCount = tVec[0].cycleCount - 1;
+            //decrement amount of cycles for active processes
+			for(int j=0; j<cores && j<tVec.size(); j++){
+				tVec[j].cycleCount = tVec[j].cycleCount - 1;
+			}
             
-            //if process is done then delete
-            if(tVec[0].cycleCount == 0){
-                printf("We are killing process %d\n", tVec[0].pid);
-                tVec.erase(tVec.begin());
-            }
-            //Break when out of processes
-            if((i/50) > pVec.size() && tVec.size() < 1){
-                printf("Did we ever even try to break?\n");
+			//parse through active processes and delete if finished
+			for(int j=0; j<cores && j<tVec.size(); j++){
+				//if process is done then delete
+				if(tVec[j].cycleCount == 0){
+					tVec.erase(tVec.begin()+j);
+					deleted++;
+				}
+			}
+            
+			//Break when out of processes
+            if(deleted == 50)
                 break;
-            }
         }
-        
         double avgT = ((double) total) / 50.0;
-        
-        printf("Average wait time was %0.4lf", avgT);
-        
+		if(cores == 1)
+			printf("Average wait time was %0.4lf for %d core\n", avgT, cores);
+		else
+			printf("Average wait time was %0.4lf for %d cores\n", avgT, cores);
+}
+
+int main(){
+		const string seeds[] = {"Foo", "Bar", "Simpsons", "Some seeds don't work"};
+		
+		for(string x: seeds){
+			vector<processStruct> pVec = genProcs(50, x); //get vector of processes
+			
+			char *tSeed = (char *) x.c_str();
+			printf("SRT for seed %s\n", tSeed);
+			
+			for(int i=1; i<=8; i = i*2)
+				SRT(pVec, i);
+			printf("\n");
+		}
 	return 0;
 }
