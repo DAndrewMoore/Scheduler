@@ -35,20 +35,20 @@ int main (){
 int k = 50; 		//number of processes
 int q = 50; 		//RoundRobin quantum
 int cts = 10; 		//context switch
-int i = 0;			//tuples index
-int j = 0;			//arrival t
-int c = 0;			//completed processes index
-int current_time = 0;//time elapsed in scheduler
+int i = 0;		//tuples index
+int j = 0;		//arrival t
+int c = 0;		//completed processes index
+int current_time = 0;	//time elapsed in scheduler
 int finished = 0;	//# processes finished
-int lowest;			//processing time interval
+int lowest;		//processing time interval
 int l = 0;
-int a = 0;			//context switch count
+int a = 0;		//context switch count
 int p = 0; 
 int next = 0;		//index for arriving processes
 
 tuple *tuples[k];	//initial processes
-tuple *completed[k];//completed processed
-tuple *proc[4];
+tuple *completed[k];	//completed processed
+tuple *proc[4];		//4 cores
 queue<tuple*> fifo;	//FIFO queue
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -87,26 +87,26 @@ for (current_time=0; finished<50; current_time+=lowest){ 		// process in lowest 
 	for (i=0; i<4; i++){
 		if (fifo.empty() != 1 && (fifo.front()->arrival_t <= current_time) && proc[i] == 0){
 			
-				proc[i] = fifo.front();
-				fifo.pop();
-				cout << i << " process " << proc[i]->pid << " entering core " << i  << " at time " << current_time << endl;
+			proc[i] = fifo.front();
+			fifo.pop();
+			cout << i << " process " << proc[i]->pid << " entering core " << i  << " at time " << current_time << endl;
 
-				//set the start time on first iteration
+			//set the start time on first iteration
 	      		if (proc[i]->start_flag == 0){
-            	    proc[i]->started = current_time;
-            	    proc[i]->start_flag = 1;
-            	}
-				if (proc[i]->stalled){
-					proc[i]->waited += current_time - proc[i]->stalled;
-					cout << "wait time updated" << endl;
-				}
-				//set current_time left in processor for added process
-				if (proc[i]->cycles<50){
-					proc[i]->tlip = proc[i]->cycles;
-				}
-				else{
-					proc[i]->tlip = 50;
-				}
+            	    		proc[i]->started = current_time;
+            	    		proc[i]->start_flag = 1;
+            		}
+			if (proc[i]->stalled){
+				proc[i]->waited += current_time - proc[i]->stalled;
+				cout << "wait time updated" << endl;
+			}
+			//set current_time left in processor for added process
+			if (proc[i]->cycles<50){
+				proc[i]->tlip = proc[i]->cycles;
+			}
+			else{
+				proc[i]->tlip = 50;
+			}
 		}
 	}//end filling
 
@@ -180,7 +180,7 @@ cout << "pid waited started arrival startdelay" << endl;
 for(i;i<50;i++){
 	//adjust waiting time by adding initial wait
 	completed[i]->waited += (completed[i]->started - completed[i]->arrival_t);
-    cout << completed[i]->pid <<"   " << completed[i]->waited << "      " << completed[i]->started << "     " << completed[i]->arrival_t  << "       "<<(completed[i]->started - completed[i]->arrival_t) << endl;
+	cout << completed[i]->pid <<"   " << completed[i]->waited << "      " << completed[i]->started << "     " << completed[i]->arrival_t  << "       "<<(completed[i]->started - completed[i]->arrival_t) << endl;
 	total_wait+=completed[i]->waited;
 }
 
