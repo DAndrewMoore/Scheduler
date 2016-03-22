@@ -38,24 +38,22 @@ int main (){
 int k = 50; 		//number of processes
 int q = 50; 		//RoundRobin quantum
 int cts = 10; 		//context switch
-int i = 0;			//tuples index
-int j = 0;			//arrival t
-int c = 0;			//completed processes index
+int i = 0;		//tuples index
+int j = 0;		//arrival t
+int c = 0;		//completed processes index
 int t = 0;		//t elapsed in scheduler
 int finished = 0;	//# processes finished
 tuple *tuples[k];	//initial processes
-tuple *completed[k];//completed processed
+tuple *completed[k];	//completed processed
 tuple * current;	//running process
 queue<tuple*> fifo;	//FIFO queue
 
-
-///////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////
 srand(time(NULL));
 cout << "spawning " << k << " processes" << endl;
 //create processes with arrival ts at intervals of 50
 for (j=0; j<2500; j+=50){
-	tuples[i] = new tuple(i, j, rand() % 100 + 1, 20);	// j = arrival t
+	tuples[i] = new tuple(i, j, rand() % 1000 + 1, 20);	// j = arrival t
 	i++;
 }
 //print process info
@@ -65,8 +63,6 @@ for(i;i<k;i++){
 	cout << tuples[i]->pid <<"   " << tuples[i]->cycles <<"   "<< tuples[i]->arrival_t << endl;
 }
 ///////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////
-
 
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -143,22 +139,23 @@ while (finished < 50){
 			fifo.pop();
 			t += cts;		//context switch
 		}
-}//50 processes finished
+}//END
 
 
-//   			DISPLAY DATA
 /////////////////////////////////////////////////////
+//   			DISPLAY DATA
 i =0;
 int total_wait = 0;
-cout << "pid waited" << endl;
+cout << "pid waited started arrival startdelay" << endl;
 for(i;i<50;i++){
-	//cout << "start minus arrival = " << completed[i]->started - completed[i]->arrival_t << endl;
+	//adjust waiting time by adding initial wait
 	completed[i]->waited += (completed[i]->started - completed[i]->arrival_t);
-    cout << completed[i]->pid <<"   " << completed[i]->waited << endl;
+    cout << completed[i]->pid <<"   " << completed[i]->waited << "      " << completed[i]->started << "     " << completed[i]->arrival_t  << "       "<<(completed[i]->started - completed[i]->arrival_t) << endl;
 	total_wait+=completed[i]->waited;
 }
 
-cout << endl << "Total penalty time: " << total_wait << endl << "Average wait time: " << total_wait/50 << endl;
-
+cout << endl << "Total wait time: " << total_wait << endl << "Average wait time: " << total_wait/50 << endl << endl;
+//
+/////////////////////////////////////////////////////
 return 0;
 }
