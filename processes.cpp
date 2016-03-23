@@ -19,7 +19,7 @@ vector<processStruct> genProcs(int numP, string aSeed){
 		processStruct temp;
 		temp.pid = 5000+i;
 		temp.cycleCount = cycles(generator);
-		//temp.cycleCount = rand() % 100 + 1;
+		//temp.cycleCount = rand() % 1000 + 1;
 		temp.memoryPrint = memory(generator);
 		temp.entranceTime = 50*i;
 		pVector.push_back(temp);

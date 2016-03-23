@@ -81,11 +81,11 @@ void fifo(vector<processStruct> pVec, int cores, int entranceT){
 	int penalty = 50*10;
 	if(cores == 1){
 		printf("Average wait time was %lf for %d core\n", avgT, cores);
-		//printf("Total penalty time was %d\n", penalty);
+		printf("Total run time was %d\n", total);
 	}
 	else{
 		printf("Average wait time was %lf for %d cores\n", avgT, cores);
-		//printf("Total penalty time was %d\n", penalty);
+		printf("Total run time was %d\n", total);
 	}
 }
 
@@ -269,21 +269,32 @@ void meh(vector<processStruct> pVec, int cores){
 		printf("Average wait time was %0.4lf for %d cores\n", avgT, cores);
 }
 
+void writePvec(vector<processStruct> pVec, string x){
+	FILE *fp = fopen( (char *) x.c_str(), "w");
+	checkTVec(pVec);
+	for(int i=0; i<50; i++){
+		fprintf(fp, "%d,",i);
+		fprintf(fp, ",%d\n",pVec[i].cycleCount);
+	}		
+}
+
 int main(){
 	const string seeds[] = {"Foo", "Bar", "Simpsons", "Some seeds don't work"};
 	
 	for(string x: seeds){
 		vector<processStruct> pVec = genProcs(50, x); //get vector of processes
 		
+		writePvec(pVec, x);
+		
 		char *tSeed = (char *) x.c_str();
 		printf("SRT for seed %s\n", tSeed);
 		
 		printf("fifo\n");
-		for(int i=1; i<=8; i = i*2)
+		for(int i=1; i<=4; i = i*4)
 			fifo(pVec, i, 50);
 		
 		printf("SJF\n");
-		for(int i=1; i<=8; i = i*2)
+		for(int i=1; i<=4; i = i*4)
 			SJF(pVec, i, 50);
 		
 		printf("\n");
