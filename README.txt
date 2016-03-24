@@ -24,6 +24,9 @@ int entranceTime;
 } processStruct;
 
 Usage for a processStruct atom is tempProcessStruct.pid or tempProcessStruct.cycleCount or etc.
+
+Fifo is literally a queue that takes puts array[0] on available processors and re-inserts with procces on array[x] is complete.
+SJF is FIFO with a bubble sort whena new process is added. Otehrwise the same.
 ------------------------------------------------------------------------------------------------------------
 rrq is fully contained to run and calculate round robin for single core on all seeds (respectively).
 
